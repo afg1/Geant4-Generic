@@ -28,6 +28,6 @@ class GeometryMessenger: public G4UImessenger
     
         G4UIcmdWithoutParameter* updateGeom;
 
-
+};
 
 #endif

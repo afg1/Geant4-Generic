@@ -24,7 +24,8 @@ class World : public G4VUserDetectorConstruction
         World(std::string);
         ~World();
         G4VPhysicalVolume* Construct();
-        
+        void UpdateGeometry();
+        void SetCentre(G4ThreeVector);
     
     private:
         // A load of volumes I'll need...
@@ -76,8 +77,7 @@ class World : public G4VUserDetectorConstruction
         G4NistManager* nistMan;
         G4SDManager* sdMan;
     
-        void UpdateGeometry();
-        void SetCentre(G4ThreeVector);
+
     
         // SD output
         std::string outloc;

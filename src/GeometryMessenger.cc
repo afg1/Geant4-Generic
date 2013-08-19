@@ -8,7 +8,7 @@
 GeometryMessenger::GeometryMessenger(World* theWorld): worldPtr(theWorld)
 {
     GeomMessDir = new G4UIdirectory("/geometryMessenger/");
-    GeomMessDir->Setguidance("Messenger for my geometry.");
+    GeomMessDir->SetGuidance("Messenger for my geometry.");
     
     shiftWater = new G4UIcmdWith3VectorAndUnit("/geometryMessenger/shiftWater", this);
     shiftWater->SetGuidance("Move the water block in 3d. Don't forget the unit!");
@@ -29,7 +29,7 @@ void GeometryMessenger::SetNewValue(G4UIcommand* cmd, G4String newValue)
 {
     if(cmd == shiftWater)
     {
-        worldPtr->SetCentre(cmd->GetNew3VectorValue(newValue));
+        worldPtr->SetCentre(shiftWater->GetNew3VectorValue(newValue));
     }
     
     if(cmd == updateGeom)
