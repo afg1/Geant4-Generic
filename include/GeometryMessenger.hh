@@ -2,7 +2,7 @@
 #define GEOMETRY_MESSENGER_H 1
 
 #include "globals.hh"
-#include "G4UIMessenger.hh"
+#include "G4UImessenger.hh"
 
 class World;
 class G4UIdirectory;
