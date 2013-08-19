@@ -1,5 +1,5 @@
 #include "G4RunManager.hh"
-#include "G4UIManager.hh"
+#include "G4UImanager.hh"
 
 #ifdef G4VIS_USE
 #include "G4VisExecutive.hh"
