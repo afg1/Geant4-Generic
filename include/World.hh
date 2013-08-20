@@ -13,10 +13,12 @@
 #include <string>
 
 #include "SensitiveDetector.hh"
+#include "GeometryMessenger.hh"
 
 
 class G4LogicalVolume;
 class G4PhysicalVolume;
+
 
 class World : public G4VUserDetectorConstruction
 {
@@ -24,6 +26,7 @@ class World : public G4VUserDetectorConstruction
         World(std::string);
         ~World();
         G4VPhysicalVolume* Construct();
+        G4VPhysicalVolume* ConstructForReconstruct();
         void UpdateGeometry();
         void SetCentre(G4ThreeVector);
     
@@ -76,7 +79,7 @@ class World : public G4VUserDetectorConstruction
         // Utilities...
         G4NistManager* nistMan;
         G4SDManager* sdMan;
-    
+        GeometryMessenger* geomMess;
 
     
         // SD output
