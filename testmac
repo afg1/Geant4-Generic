@@ -15,7 +15,7 @@
 /SDMessenger/setBins1D 100
 /SDMessenger/finalize
 
-#/control/execute vismac.mac
+#/control/execute vismac.mac  # If you want visualisation, remove the # at the start of this line...
 
 /run/beamOn 100000
 
