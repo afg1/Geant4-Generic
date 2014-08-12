@@ -1,0 +1,33 @@
+# Standard Visualisation setup for Geant4; Mostly copied from the standard examples, but split up more to make testing and batch runs with the same set of macros easier
+
+# Call this file if you want visualisation, otherwise don't
+# Assumptions:
+# -Using OpenGL to do the graphics
+# -
+
+# Open the OGL window
+/vis/open OGL 600x600-0+0
+
+# Make some settings to speed up the initialisation
+/vis/viewer/set/autoRefresh false
+/vis/verbose errors # Only shouts if there is an error
+
+# Draw the volume
+/vis/drawVolume
+
+# Specify the view angle, it's a theta-phi specification, so use something like this to see a symmetrical geometry properly (otherwise it looks broken; you only see squares or whatever)
+/vis/viewer/set/viewpointThetaPhi 70. 70.
+/vis/viewer/zoom 1
+
+# Now specify options to draw trajectories
+/vis/scene/add/trajectories smooth
+#/vis/modelling/trajectories/drawByCharge
+#/vis/modelling/trajectories/drawByCharge-0/default/setDrawStepPoints true # You get little yellow dots where the step points are
+#/vis/modelling/trajectories/drawByCharge-0/default/setStepPtsSize 1 # Step points are a pixel
+
+# Now set up the superposition of all the tracks at the end of a run
+/vis/scene/endOfEventAction accumulate
+
+# Reset the verbosity and stuff to normal
+/vis/viewer/set/autoRefresh true
+/vis/verbose warnings

@@ -6,10 +6,11 @@
 #include "G4EmStandardPhysics_option3.hh"
 #include "G4EmProcessOptions.hh"
 #include "G4EmPenelopePhysics.hh"
-#include "G4HadronInelasticQLHEP.hh"
-#include "HadronPhysicsQGSP_BIC.hh"
+//#include "G4HadronInelasticQLHEP.hh"
+#include "G4HadronPhysicsQGSP_BIC.hh"
 #include "G4ProcessManager.hh"
 #include "G4DecayPhysics.hh"
+#include "G4SystemOfUnits.hh"
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo....
 //
 Physics::Physics(): G4VUserPhysicsList()
@@ -21,7 +22,7 @@ Physics::Physics(): G4VUserPhysicsList()
     cutForProton = defaultCutValue;//1e-6*mm;// Chosen to roughly correspond to the NIST data shortest range
 
     emPhysicsList = new G4EmStandardPhysics();
-    hadrPhysicsList = new HadronPhysicsQGSP_BIC("hadronphys");//, ver, false, false, true, false);
+    hadrPhysicsList = new G4HadronPhysicsQGSP_BIC("hadronphys");//, ver, false, false, true, false);
     decayPhys = new G4DecayPhysics("decays");
 }
 //

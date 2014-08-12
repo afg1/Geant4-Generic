@@ -5,6 +5,7 @@
 #include "G4ios.hh"
 #include "Hit.hh"
 #include "G4ThreeVector.hh"
+#include "G4SystemOfUnits.hh"
 
 #include <fstream>
 #include <string>
@@ -12,104 +13,114 @@
 #include <iomanip>
 #include <cmath>
 
+#include "SDMessenger.hh"
 
-SensitiveDetector::SensitiveDetector(G4String name, std::string out, G4String HCname) : G4VSensitiveDetector(name), outloc(out){
+
+SensitiveDetector::SensitiveDetector(G4String name, G4String HCname) : G4VSensitiveDetector(name)
+{
     collectionName.insert(HCname);
-    dose = 0;
+    SDM = new SDMessenger(this);
+    histogram = NULL;
 }
 
 SensitiveDetector::~SensitiveDetector()
 {
 }
 
-void SensitiveDetector::Initialize(G4HCofThisEvent* HCE)
+void SensitiveDetector::Initialize(G4HCofThisEvent* )
 {
-    collection = new G4HitCollection(SensitiveDetectorName, collectionName[0]);
-    static G4int HCID = -1;
-    if(HCID < 0)
-    {
-        HCID = G4SDManager::GetSDMpointer()->GetCollectionID(collectionName[0]);
-    }
-    HCE->AddHitsCollection(HCID, collection);
+    
 }
 
 G4bool SensitiveDetector::ProcessHits(G4Step* aStep, G4TouchableHistory*)
 {
-    if(aStep->GetTrack()->GetParentID() == 0)
-    {
-        G4double edep = aStep->GetTotalEnergyDeposit();
-        G4ThreeVector pos =  aStep->GetTrack()->GetPosition();
-        G4double E = aStep->GetTrack()->GetKineticEnergy();
-        WaterHit* newHit = new WaterHit();
-        newHit->SetPosition(pos);
-        newHit->SetEdep(edep);
-        newHit->SetEne(E);
-        collection->insert(newHit);
-        dose += newHit->GetEdep();
-    }
+    histogram->Fill(aStep->GetTrack()->GetPosition(), aStep->GetTotalEnergyDeposit());
     return true;
 }
 
-void SensitiveDetector::EndOfEvent(G4HCofThisEvent* CHC)
+void SensitiveDetector::EndOfEvent(G4HCofThisEvent* )
 {
-    int id(-1);
-    id = G4SDManager::GetSDMpointer()->GetCollectionID(collectionName[0]);
-    G4HitsCollection* HC = 0;
-    G4ThreeVector pos;
-    G4double E(0);
-    HC = (G4HitsCollection*)CHC->GetHC(id);
-    int n_hits(0);
-    n_hits = HC->GetSize();
-    
-    for(int i=0; i< n_hits; i++)
-    {
-        
-        WaterHit* hit = (WaterHit*)HC->GetHit(i);
-        pos = hit->GetPosition();
-        E = hit->GetEne();
 
-        x.push_back(pos[0]);
-        y.push_back(pos[1]);
-        z.push_back(pos[2]);
-        Es.push_back(E);
-
-    }
 }
 
-void SensitiveDetector::WriteData(double D)
+void SensitiveDetector::WriteData(G4String fname)//double D, double bp)
 {
-    G4double outdata[4] = {0.0, 0.0, 0.0, 0.0};
-    // Write out the hits to a binary file
-
-    std::ofstream output;
-    if(fexists(outloc.c_str()))
-    {
-        output.open(outloc.c_str(), std::ios::app|std::ios::binary);
-    }
-    else
-    {
-        output.open(outloc.c_str(), std::ios::binary);
-        output.write((char*)&D, sizeof(D));
-        output.write((char*)&dose, sizeof(dose));
-    }
-    if(output.is_open())
-    {
-        for(size_t n=0; n<x.size(); n++)
-        {
-            outdata[0] = x[n];
-            outdata[1] = y[n];
-            outdata[2] = z[n];
-            outdata[3] = Es[n];
-            output.write((char*)&outdata, sizeof(outdata));
-        }
-    }
+    histogram->Write(fname);
 }
 
-        
-
-
-bool SensitiveDetector::fexists(const char* fname)// Handy function I wrote to check for the existence of the output file
+void SensitiveDetector::Merge(SensitiveDetector* SDi)
 {
-    std::ifstream ifile(fname);
-    return ifile;
+    histogram->Add(*SDi->histogram);
 }
+
+
+void SensitiveDetector::AddHistogram(G4String)
+{
+    histogram = new LMHist();// Use default constructor and then set things
+}
+void SensitiveDetector::SetHistogramDimension(int D)
+{
+    histogram->SetDimension(D);
+}
+void SensitiveDetector::SetHistogramMax3(G4ThreeVector Ma3)
+{
+    histogram->SetMax3(Ma3);
+}
+void SensitiveDetector::SetHistogramMin3(G4ThreeVector Mi3)
+{
+    histogram->SetMin3(Mi3);
+}
+void SensitiveDetector::SetHistogramMax2(G4double Ma2)
+{
+    histogram->SetMax2(Ma2);
+}
+void SensitiveDetector::SetHistogramMin2(G4double Mi2)
+{
+    histogram->SetMin2(Mi2);
+}
+void SensitiveDetector::SetHistogramMax1(G4double Ma1)
+{
+    histogram->SetMax1(Ma1);
+}
+void SensitiveDetector::SetHistogramMin1(G4double Mi1)
+{
+    histogram->SetMin1(Mi1);
+}
+
+void SensitiveDetector::SetHistogramAxis(G4String ax)
+{
+    histogram->SetAxis(ax);
+}
+
+void SensitiveDetector::SetHistogramBins1D(int B1)
+{
+    histogram->SetBins1(B1);
+}
+
+void SensitiveDetector::SetHistogramBins2D(int B2)
+{
+    histogram->SetBins2(B2);
+}
+
+void SensitiveDetector::SetHistogramBins3D(G4ThreeVector B3)
+{
+    histogram->SetBins3(B3.x(), B3.y(), B3.z());
+}
+
+void SensitiveDetector::SetHistogramCentre(G4ThreeVector C)
+{
+    histogram->SetCentre(C);
+}
+
+void SensitiveDetector::FinalizeHist()
+{
+    histogram->Finalize();
+}
+
+
+
+
+
+
+
+

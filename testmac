@@ -1,0 +1,26 @@
+/gps/particle proton
+/gps/pos/centre 0 0 -100 cm
+/gps/ene/mono 200.0 MeV
+/gps/direction 0 0 1
+
+
+
+
+/SDMessenger/addHist test
+/SDMessenger/setHistDim 2
+/SDMessenger/setMax1 60 cm
+/SDMessenger/setMin1 -60 cm
+/SDMessenger/setCentre 0 0 0 cm
+/SDMessenger/setAxis z
+/SDMessenger/setBins1D 100
+/SDMessenger/finalize
+
+#/control/execute vismac.mac
+
+/run/beamOn 100000
+
+/SDMessenger/writeData testhistp-MT
+
+
+
+

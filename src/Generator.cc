@@ -11,10 +11,6 @@
 Generator::Generator()
 {
     gun = new G4GeneralParticleSource();
-
-    G4ParticleTable* particleTable = G4ParticleTable::GetParticleTable();
-    G4String particleName;
-    gun->SetParticleDefinition(particleTable->FindParticle(particleName="proton"));
 }
 
 Generator::~Generator()

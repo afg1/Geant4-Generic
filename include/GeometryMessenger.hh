@@ -8,7 +8,8 @@ class World;
 class G4UIdirectory;
 class G4UIcmdWithoutParameter;
 //class G4UIcmdWithAnInteger;
-//class G4UIcmdWithADoubleAndUnit;
+class G4UIcmdWithADoubleAndUnit;
+class G4UIcmdWithAString;
 class G4UIcmdWith3VectorAndUnit;
 
 class GeometryMessenger: public G4UImessenger
@@ -26,8 +27,17 @@ class GeometryMessenger: public G4UImessenger
     
         G4UIcmdWith3VectorAndUnit* shiftWater;
     
+        G4UIcmdWithADoubleAndUnit* rotateWaterX;
+    
+        G4UIcmdWithADoubleAndUnit* rotateWaterY;
+    
+        G4UIcmdWithADoubleAndUnit* rotateWaterZ;
+    
+        G4UIcmdWithAString* addHistogram;
+    
+    
         G4UIcmdWithoutParameter* updateGeom;
-
+    
 };
 
 #endif

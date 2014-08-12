@@ -39,10 +39,14 @@ class WaterHit : public G4VHit
     
         void SetPlaneID(G4int P){planeID = P;}
         G4int GetPlaneID(){return planeID;}
+    
+        void SetVelocity(G4ThreeVector v){vel = v;}
+        G4ThreeVector GetVelocity(){return vel;}
 
     private:
         G4double edep;
         G4ThreeVector pos;
+        G4ThreeVector vel;
         G4double ene;
         G4int planeID;
         G4int TrackID;

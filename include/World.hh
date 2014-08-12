@@ -23,12 +23,17 @@ class G4PhysicalVolume;
 class World : public G4VUserDetectorConstruction
 {
     public:
-        World(std::string);
+        World();
         ~World();
         G4VPhysicalVolume* Construct();
+        void ConstructSDandField();
+    
+    
         G4VPhysicalVolume* ConstructForReconstruct();
         void UpdateGeometry();
         void SetCentre(G4ThreeVector);
+        void SetRotation(G4RotationMatrix);
+        void WriteData(G4String fname){SD1->WriteData(fname);}
     
     private:
         // A load of volumes I'll need...
@@ -60,17 +65,16 @@ class World : public G4VUserDetectorConstruction
 //        G4VPhysicalVolume* plane7Phys;
     
         G4double worldSize;// Assume cube
-        G4double planeThickness;
-        G4double planeWidth;// Dump will be cuboid
-        G4double planeHeight;
+        G4double waterThickness;
+        G4double waterWidth;// Dump will be cuboid
+        G4double waterHeight;
         G4ThreeVector waterCentre;
+        G4RotationMatrix* waterRot;
 
     
         // Shapes for things
         G4Box* worldBox;
-        G4Box* planeBox;
-        G4Box* outerplaneBox;
-        G4EllipticalTube* theWater;
+        G4Box* waterBox;
     
         // Materials needed in the spectrometer
         G4Material* VAC;
