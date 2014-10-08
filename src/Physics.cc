@@ -21,7 +21,7 @@ Physics::Physics(): G4VUserPhysicsList()
     cutForPositron = defaultCutValue;
     cutForProton = defaultCutValue;//1e-6*mm;// Chosen to roughly correspond to the NIST data shortest range
 
-    emPhysicsList = new G4EmStandardPhysics();
+    emPhysicsList = new G4EmStandardPhysics_option3();
     hadrPhysicsList = new G4HadronPhysicsQGSP_BIC("hadronphys");//, ver, false, false, true, false);
     decayPhys = new G4DecayPhysics("decays");
 }
