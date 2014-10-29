@@ -36,11 +36,24 @@ I have written a class to interface most things you will need to do with the Gea
 
 To get the code for the frontend, you will need to use git, which is a version control system. Using this, you can execute a `clone' command to pull down a copy of the code from my github repository. If you find bugs or really need extra features, I can sync the repository after I've made changes, and then you can pull down the changes and rebuild. It should work smoothly. I'm going to assume you have git installed, but if you don't it should be easy enough to get hold of. The command you will want to execute is:
 \begin{verbatim}
-git clone 
+git clone https://github.com/afg1/Geant4-Generic.git
 \end{verbatim}
+This will download all the code to a folder named Geant4-Generic on your computer. If you then enter the directory and create a subfolder called `build' or something like that, you can build the code without screwing up the source tree.
 
 Building the executable requires CMake (preferably CCMake - the commandline GUI), a C++ compiler and GNU Make. This is of course assuming you're running under Linux/OSX. If you're running on Windows, I suggest you find a computer with Linux on it, because Geant4 is less well supported on Windows, and I have no experience whatsoever running under Windows and can't help.
 
 I recommend GCC-4.8, which you should have on a reasonably recent Linux install, and shouldn't be too difficult to get hold of on Mac. There are instructions for Windows, but as I said, I have no experience in the matter, so you're on your own if that's the way you want to go.
 
+To build the code, follow these steps:
+\begin{verbatim}
+cd <build directory>
+ccmake <path to source directory>
+\end{verbatim}
+This will bring up the CCMake GUI, the only thing you will need to change is the build type. To do this highlight it and hit enter, then type `Release' (this sets flags for maximum optimization) and hit enter again, then hit `c' to configure, wait for it to finish, then `g' to generate. You will then exit the CCMake GUI and return to the commandline, where you can execute
+\begin{verbatim}
+make -jN
+\end{verbatim}
+where N is the number of threads you want to use. There is no point having N $>$ 10, because there aren't that many files to compile. The result of this will be an executable file called G4e in the build directory, this is what you want.
+
+For further details, see the README file in the repository, which also has a full description of the messenger classes
 \end{document}
