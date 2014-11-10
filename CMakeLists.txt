@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 2.8)
+cmake_minimum_required(VERSION 2.6)
 set(CMAKE_MODULE_PATH /Users/andrew/Documents/Programs/Geant4/geant4.9.5.p01/cmake/Modules/)
 
 find_package(Geant4 REQUIRED vis_all)
