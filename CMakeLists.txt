@@ -2,10 +2,10 @@ cmake_minimum_required(VERSION 2.6)
 set(CMAKE_MODULE_PATH /Users/andrew/Documents/Programs/Geant4/geant4.9.5.p01/cmake/Modules/)
 
 find_package(Geant4 REQUIRED vis_all)
-
-include_directories("include" ${Geant4_INCLUDE_DIRS} ${ROOT_INCLUDE_DIR})
-add_definitions(${Geant4_DEFINITIONS} ${ROOT_DEFINITIONS} "-O3" "-Wall" "-DG4VIS_USE" )
-set(CMAKE_CXX_FLAGS ${Geant4_CXX_FLAGS} ${ROOT_CXX_FLAGS})
+SET(CXX11 "-std=c++11")
+include_directories("include" ${Geant4_INCLUDE_DIRS})
+add_definitions(${Geant4_DEFINITIONS})
+set(CMAKE_CXX_FLAGS "${Geant4_CXX_FLAGS} ${CXX11}")
 
 FILE(GLOB sources src/*.cc)
 FILE(GLOB headers include/*.hh)

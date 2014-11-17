@@ -1,25 +1,38 @@
 /gps/particle proton
-/gps/pos/centre 0 0 -100 cm
+/gps/pos/centre 0 0 0 cm
+/gps/pos/type Beam
+/gps/pos/shape Circle
+/gps/pos/radius 8.0 mm
+
 /gps/ene/mono 200.0 MeV
 /gps/direction 0 0 1
 
+#/gps/verbose 1
+#/tracking/verbose 1
+
+# Take note of the changes here - Histograms are now added differently.
+# To add a histogram, you need to specify everything about it, then call /SDMessenger/addHist <name>
+# Same rules apply about the centre of the histogram, and now I’m pretty confident the penumbra works, but you should check
+# There is a new command, /SDMessenger/setType which allows you to select the type of histogram to use. 0 is for depth-dose, 1 for depth-LET, 2 for penumbra-dose and 3 for penumbra-LET
+# 
 
 
-
-/SDMessenger/addHist test
-/SDMessenger/setHistDim 2
-/SDMessenger/setMax1 60 cm
-/SDMessenger/setMin1 -60 cm
-/SDMessenger/setCentre 0 0 0 cm
+/SDMessenger/setHistDim 1
+/SDMessenger/setMax1 30 cm
+/SDMessenger/setMin1 0 cm
+/SDMessenger/setCentre 0 0 15 cm
 /SDMessenger/setAxis z
-/SDMessenger/setBins1D 100
-/SDMessenger/finalize
+/SDMessenger/setBins1D 1000
+/SDMessenger/setType 0
+/SDMessenger/addHist test
+
 
 #/control/execute vismac.mac  # If you want visualisation, remove the # at the start of this line...
 
 /run/beamOn 100000
 
-/SDMessenger/writeData testhistp-MT
+/SDMessenger/writeData protonLET1
+
 
 
 

@@ -8,7 +8,7 @@ This class implements the sensitive detector, which also handles file output
 #include "Hit.hh"
 #include <string>
 
-#include "LowMemHist.h"
+#include "Histogramming.hh"
 #include "SDMessenger.hh"
 
 class SDMessenger;
@@ -26,7 +26,7 @@ class SensitiveDetector : public G4VSensitiveDetector
         void WriteData(G4String);//double D, double bp);
         void Merge(SensitiveDetector* SDi);
     
-        void AddHistogram(G4String);
+        void AddHistogram();
         void SetHistogramDimension(int);
         void SetHistogramMax3(G4ThreeVector);
         void SetHistogramMin3(G4ThreeVector);
@@ -40,13 +40,40 @@ class SensitiveDetector : public G4VSensitiveDetector
         void SetHistogramBins2D(int);
         void SetHistogramBins3D(G4ThreeVector);
         void SetHistogramCentre(G4ThreeVector);
+        void SetHistogramName(G4String);
+        void SetHistogramType(G4int t){type = t;}
     
-        void FinalizeHist();
+//        void FinalizeHist();
     
     private:
         G4HitCollection* collection;
-        LMHist* histogram;
+        Histogram* histogram;
         SDMessenger* SDM;
+    
+    private:
+        // Variables considered volatile - used to add histograms
+        G4ThreeVector bins;
+        G4ThreeVector ext;
+        G4ThreeVector ext_max;
+        G4ThreeVector ext_min;
+        G4ThreeVector centre;
+        G4String hist_name;
+        double max2;
+        double min2;
+        double max1;
+        double min1;
+        short int dim;
+        int type;
+        int bins1;
+        int bins2;
+    
+        short int bindim1;
+        short int bindim2;
+    
+        double binwidth;
+    
+    
+        
         
 
 

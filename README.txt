@@ -11,7 +11,7 @@ And follow the instructions here:
 
 http://geant4.web.cern.ch/geant4/UserDocumentation/UsersGuides/InstallationGuide/html/index.html
 
-After you’ve done this, you need to make sure you source the script called geant4.sh which is located in the bin/ foolder wherever you installed Geant. This sets up the environment and makes sure cmake can find the install.
+After you’ve done this, you need to make sure you source the script called geant4.sh which is located in the bin/ folder wherever you installed Geant. This sets up the environment and makes sure cmake can find the install.
 
 cd into the directory where you cloned this repository and make a folder called “build” or similar, then cd into it. then run “ccmake ../“ to configure the build. after a few presses of “c” and hopefully no error messages, you can press “g” and then give the “make” command. There should not be any error messages, but there might be a few warnings, you can ignore them.
 

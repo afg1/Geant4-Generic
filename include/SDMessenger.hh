@@ -61,7 +61,22 @@ class SDMessenger: public G4UImessenger
     
         G4UIcmdWithoutParameter* finalize;
     
-        bool histexists;
+        G4UIcmdWithAnInteger* setType;
+    
+        int dim;
+    
+        bool dimSet;
+        bool max3Set;
+        bool max2Set;
+        bool max1Set;
+        bool min3Set;
+        bool min2Set;
+        bool min1Set;
+        bool centreSet;
+        bool bins1DSet;
+        bool bins2DSet;
+        bool bins3DSet;
+        bool axisSet;
     
 };
 
