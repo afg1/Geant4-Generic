@@ -37,7 +37,7 @@ G4bool SensitiveDetector::ProcessHits(G4Step* aStep, G4TouchableHistory*)
 {
     if(type == 2 || type == 3)// 2 = penumbra, 3 = penumbra-LET
     {
-        if(!((abs(aStep->GetTrack()->GetPosition()[2-bindim1] - centre[2-bindim1]) < binwidth) && abs(aStep->GetTrack()->GetPosition()[abs(1-bindim1)] - centre[abs(1-bindim1)]) < binwidth))
+        if(!( (abs(aStep->GetTrack()->GetPosition()[2-bindim1] - centre[2-bindim1]) < binwidth) && abs(aStep->GetTrack()->GetPosition()[abs(1-bindim1)] - centre[abs(1-bindim1)]) < binwidth) )
         {
             return true;
         }
@@ -49,19 +49,20 @@ G4bool SensitiveDetector::ProcessHits(G4Step* aStep, G4TouchableHistory*)
         else if(type == 3)
         {
             double let = (aStep->GetTotalEnergyDeposit()*MeV)/(aStep->GetStepLength()*um);
-//            G4cout << let << G4endl;
             histogram->Fill(aStep->GetTrack()->GetPosition(), let);
         }
     }
-    if(type == 0)
+    if(type == 0)// Dose
     {
         histogram->Fill(aStep->GetTrack()->GetPosition(), aStep->GetTotalEnergyDeposit());
     }
-    else if(type == 1)
+    else if(type == 1)// LET
     {
-        double let = aStep->GetTotalEnergyDeposit()/aStep->GetStepLength();
-//        G4cout << let << G4endl;
-        histogram->Fill(aStep->GetTrack()->GetPosition(), let);
+        if( aStep->GetStepLength() > 0.0)
+        {
+            double let = aStep->GetTotalEnergyDeposit()/aStep->GetStepLength();
+            histogram->Fill(aStep->GetTrack()->GetPosition(), let);
+        }
     }
     return true;
 }
