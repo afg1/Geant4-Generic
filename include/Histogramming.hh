@@ -23,6 +23,7 @@ class Histogram
         G4ThreeVector bins;
     
         std::unordered_map<unsigned int, double> data;
+        std::unordered_map<unsigned int, unsigned int> hitsHere;
     
         short int dimension;
     

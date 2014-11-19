@@ -25,12 +25,17 @@ Histogram::Histogram(G4String name, G4ThreeVector cent, G4ThreeVector ext, G4Thr
 Histogram::~Histogram()
 {
     data.clear();
+    hitsHere.clear();
 }
 
 void Histogram::Merge(Histogram* right)
 {
     std::unordered_map<unsigned int, double>::iterator iterator_r;
     std::unordered_map<unsigned int, double>::iterator iterator_l;
+    
+    std::unordered_map<unsigned int, unsigned int>::iterator iterator_hits_r;
+    std::unordered_map<unsigned int, unsigned int>::iterator iterator_hits_l;
+    
     for(unsigned int i=0; i < (nx*ny*nz); i++)
     {
         iterator_r = right->data.find(i);
@@ -46,6 +51,17 @@ void Histogram::Merge(Histogram* right)
         // Two other cases:
         // -    Found in left but not right : We would effectively be doing D_l += 0, so we can ignore this case
         // -    Not found in either map : This is a voxel where no dose has been deposited, so we can safely ignore this case too
+        
+        iterator_hits_r = right->hitsHere.find(i);
+        iterator_hits_l = hitsHere.find(i);
+        if(iterator_hits_l != hitsHere.end() && iterator_hits_r != right->hitsHere.end())// Found in both - add the right to left
+        {
+            iterator_hits_l->second += iterator_hits_r->second;
+        }
+        else if(iterator_hits_l == hitsHere.end() && iterator_hits_r != right->hitsHere.end())// Found in right, but not left
+        {
+            hitsHere.insert(*iterator_hits_r);// We add the newfound dose to our map
+        }
     }
 
 }
@@ -95,14 +111,18 @@ void Histogram1D::Fill(G4ThreeVector pos, double D)
     if(u < bins[bindim1])
     {
         std::pair<unsigned int, double> temp = std::make_pair(u, D);// According to my tests in python, this hashing function has no collisions. It gets re-hashed anyway by the map though.
+        std::pair<unsigned int, unsigned int> hitTemp = std::make_pair(u, 1);
         std::pair<std::unordered_map<unsigned int, double>::iterator, bool> insert_rval = data.insert(temp);
-        if(insert_rval.second)// Insertion succeeded! Return now
+        std::pair<std::unordered_map<unsigned int, unsigned int>::iterator, bool> insert_hit = hitsHere.insert(hitTemp);
+        
+        if(insert_rval.second && insert_hit.second)// Insertion succeeded! Return now
         {
             return;
         }
         else// Found another element with same key - first rval is the iterator to it, so we can directly add the deposit
         {
             insert_rval.first->second += D;
+            insert_hit.first->second += 1;
         }
     }
 }
@@ -111,16 +131,26 @@ void Histogram1D::Write(G4String fname)
 {
     std::ofstream output;
     output.open(fname, std::ios::binary);
-    double outdata(0);
+    double outdata(0), founddata(0);
     if(output.is_open())
     {
         std::unordered_map<unsigned int, double>::iterator iterator;
+        std::unordered_map<unsigned int, unsigned int>::iterator hits_iterator;
         for(unsigned int i=0; i < (bins[bindim1]); i++)
         {
             iterator = data.find(i);
-            if(iterator != data.end())
+            hits_iterator = hitsHere.find(i);
+            if(iterator != data.end() && hits_iterator != hitsHere.end())
             {
-                output.write((char*)&iterator->second, sizeof(double));
+                if(hist_type == 1 || hist_type == 3)// LET and penumbra LET
+                {
+                    founddata = (iterator->second/hits_iterator->second);
+                }
+                else
+                {
+                    founddata = iterator->second;
+                }
+                output.write((char*)&founddata, sizeof(double));
             }
             else
             {
