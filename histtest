@@ -1,0 +1,64 @@
+#/SDMessenger/setHistDim 2
+#/SDMessenger/setMax1 60 cm
+#/SDMessenger/setMin1 -60 cm 
+#/SDMessenger/setMax2 5 cm
+#/SDMessenger/setMin2 -5 cm
+#/SDMessenger/setCentre 0 0 -60 cm
+#/SDMessenger/setAxis zx
+#/SDMessenger/setBins1D 1000
+#/SDMessenger/setBins2D 1000
+#/SDMessenger/setType 0
+#/SDMessenger/addHist test
+
+/SDMessenger/setHistDim 1
+/SDMessenger/setMax1 5 cm
+/SDMessenger/setMin1 -5 cm
+/SDMessenger/setAxis x
+/SDMessenger/setCentre 0 0 10 cm
+/SDMessenger/setBins1D 1000 # 1mm bins
+/SDMessenger/setType 2
+/SDMessenger/addHist penumbra_10cm
+
+/SDMessenger/setHistDim 1
+/SDMessenger/setMax1 5 cm
+/SDMessenger/setMin1 -5 cm
+/SDMessenger/setAxis x
+/SDMessenger/setCentre 0 0 20 cm
+/SDMessenger/setBins1D 1000 # 1mm bins
+/SDMessenger/setType 2
+/SDMessenger/addHist penumbra_20cm
+
+
+/SDMessenger/setHistDim 1
+/SDMessenger/setMax1 5 cm
+/SDMessenger/setMin1 -5 cm
+/SDMessenger/setAxis x
+/SDMessenger/setCentre 0 0 30 cm
+/SDMessenger/setBins1D 1000 # 1mm bins
+/SDMessenger/setType 2
+/SDMessenger/addHist penumbra_30cm
+
+
+/SDMessenger/setHistDim 1
+/SDMessenger/setMax1 5 cm
+/SDMessenger/setMin1 -5 cm
+/SDMessenger/setAxis x
+/SDMessenger/setCentre 0 0 40 cm
+/SDMessenger/setBins1D 1000 # 1mm bins
+/SDMessenger/setType 2
+/SDMessenger/addHist penumbra_40cm
+
+
+
+
+/gps/particle gamma
+/gps/ene/mono 21 MeV
+/gps/pos/centre 0 0 0 cm
+/gps/pos/shape Circle
+/gps/pos/radius 3.0 mm
+/gps/direction 0 0 1
+
+/run/beamOn 1
+
+
+/SDMessenger/writeData test-2d

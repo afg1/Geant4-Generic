@@ -12,10 +12,11 @@ class Histogram
     public:
         Histogram(G4String, G4ThreeVector, G4ThreeVector, G4ThreeVector, short int, int);
         virtual ~Histogram();
-        virtual void Fill(G4ThreeVector, double)=0;
+        virtual void Fill(G4ThreeVector, double, double)=0;
         virtual void Write(G4String)=0;
         void Merge(Histogram*);
         int GetType(){return hist_type;}
+        G4String GetName(){return hist_name;}
 
     protected:
         G4ThreeVector centre;
@@ -45,7 +46,7 @@ class Histogram1D : public Histogram
     public:
         Histogram1D(G4String, G4ThreeVector, G4ThreeVector, G4ThreeVector, short int, int);
         ~Histogram1D();
-        virtual void Fill(G4ThreeVector, double);
+        virtual void Fill(G4ThreeVector, double, double);
         virtual void Write(G4String);
     
 //    private:
@@ -57,7 +58,7 @@ class Histogram2D : public Histogram
     public:
         Histogram2D(G4String, G4ThreeVector, G4ThreeVector, G4ThreeVector, short int, int);
         ~Histogram2D();
-        virtual void Fill(G4ThreeVector, double);
+        virtual void Fill(G4ThreeVector, double, double);
         virtual void Write(G4String);
 
 
@@ -69,7 +70,7 @@ class Histogram3D : public Histogram
     public:
         Histogram3D(G4String, G4ThreeVector, G4ThreeVector, G4ThreeVector, short int, int);
         ~Histogram3D();
-        virtual void Fill(G4ThreeVector, double);
+        virtual void Fill(G4ThreeVector, double, double);
         virtual void Write(G4String);
 
 

@@ -35,34 +35,9 @@ void SensitiveDetector::Initialize(G4HCofThisEvent* )
 
 G4bool SensitiveDetector::ProcessHits(G4Step* aStep, G4TouchableHistory*)
 {
-    if(type == 2 || type == 3)// 2 = penumbra, 3 = penumbra-LET
+    for(auto hist = multiHist.begin(); hist != multiHist.end(); hist++)
     {
-        if(!( (abs(aStep->GetTrack()->GetPosition()[2-bindim1] - centre[2-bindim1]) < binwidth) && abs(aStep->GetTrack()->GetPosition()[abs(1-bindim1)] - centre[abs(1-bindim1)]) < binwidth) )
-        {
-            return true;
-        }
-        if(type == 2)
-        {
-            histogram->Fill(aStep->GetTrack()->GetPosition(), aStep->GetTotalEnergyDeposit());
-            return true;
-        }
-        else if(type == 3)
-        {
-            double let = (aStep->GetTotalEnergyDeposit()*MeV)/(aStep->GetStepLength()*um);
-            histogram->Fill(aStep->GetTrack()->GetPosition(), let);
-        }
-    }
-    if(type == 0)// Dose
-    {
-        histogram->Fill(aStep->GetTrack()->GetPosition(), aStep->GetTotalEnergyDeposit());
-    }
-    else if(type == 1)// LET
-    {
-        if( aStep->GetStepLength() > 0.0)
-        {
-            double let = aStep->GetTotalEnergyDeposit()/aStep->GetStepLength();
-            histogram->Fill(aStep->GetTrack()->GetPosition(), let);
-        }
+        (*hist)->Fill(aStep->GetTrack()->GetPosition(), aStep->GetTotalEnergyDeposit(), aStep->GetStepLength());
     }
     return true;
 }
@@ -74,17 +49,27 @@ void SensitiveDetector::EndOfEvent(G4HCofThisEvent* )
 
 void SensitiveDetector::WriteData(G4String fname)//double D, double bp)
 {
-    histogram->Write(fname);
+    for(auto hist = multiHist.begin(); hist != multiHist.end(); hist++)
+    {
+        (*hist)->Write(fname + "_" + (*hist)->GetName());
+    }
 }
 
 void SensitiveDetector::Merge(SensitiveDetector* SDi)
 {
-    histogram->Merge(SDi->histogram);
+    int i=0;
+    for(auto hist = multiHist.begin(); hist != multiHist.end(); hist++)
+    {
+        (*hist)->Merge(SDi->multiHist[i]);
+        i++;
+    }
+    
 }
 
 
-void SensitiveDetector::AddHistogram()
+void SensitiveDetector::AddHistogram(G4String name)
 {
+    hist_name = name;
     if(dim == 1)
     {
         bins = G4ThreeVector();
@@ -95,6 +80,7 @@ void SensitiveDetector::AddHistogram()
         binwidth = 2.0;
         
         histogram = new Histogram1D(hist_name, centre, ext, bins, dim, type);
+        multiHist.push_back(histogram);
         
     }
     else if(dim == 2)
@@ -102,12 +88,12 @@ void SensitiveDetector::AddHistogram()
         bins = G4ThreeVector();
         bins[bindim1] = bins1;
         bins[bindim2] = bins2;
-        
         ext = G4ThreeVector();
         ext[bindim1] = (max1 - min1);
         ext[bindim2] = (max2 - min2);
         
         histogram = new Histogram2D(hist_name, centre, ext, bins, dim, type);
+        multiHist.push_back(histogram);
     }
     else if(dim == 3)
     {
@@ -115,6 +101,7 @@ void SensitiveDetector::AddHistogram()
         
         ext = ext_max - ext_min;
         histogram = new Histogram3D(hist_name, centre, ext, bins, dim, type);
+        multiHist.push_back(histogram);
     }
     else
     {

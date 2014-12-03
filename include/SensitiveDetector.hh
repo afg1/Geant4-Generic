@@ -26,7 +26,7 @@ class SensitiveDetector : public G4VSensitiveDetector
         void WriteData(G4String);//double D, double bp);
         void Merge(SensitiveDetector* SDi);
     
-        void AddHistogram();
+        void AddHistogram(G4String);
         void SetHistogramDimension(int);
         void SetHistogramMax3(G4ThreeVector);
         void SetHistogramMin3(G4ThreeVector);
@@ -47,6 +47,7 @@ class SensitiveDetector : public G4VSensitiveDetector
     
     private:
         G4HitCollection* collection;
+        std::vector<Histogram*> multiHist;
         Histogram* histogram;
         SDMessenger* SDM;
     

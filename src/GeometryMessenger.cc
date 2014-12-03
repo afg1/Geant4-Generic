@@ -16,13 +16,13 @@ GeometryMessenger::GeometryMessenger(World* theWorld): worldPtr(theWorld)
     shiftWater->SetGuidance("Move the water block in 3d. Don't forget the unit!");
     
     rotateWaterX = new G4UIcmdWithADoubleAndUnit("/geometryMessenger/rotateWaterX", this);
-    rotateWaterX->SetGuidance("Rotate the water block in X. Don't forget the unit!");
+    rotateWaterX->SetGuidance("Rotate the water block about X. Don't forget the unit!");
     
     rotateWaterY = new G4UIcmdWithADoubleAndUnit("/geometryMessenger/rotateWaterY", this);
-    rotateWaterY->SetGuidance("Rotate the water block in Y. Don't forget the unit!");
+    rotateWaterY->SetGuidance("Rotate the water block about Y. Don't forget the unit!");
     
     rotateWaterZ = new G4UIcmdWithADoubleAndUnit("/geometryMessenger/rotateWaterZ", this);
-    rotateWaterZ->SetGuidance("Rotate the water block in Z. Don't forget the unit!");
+    rotateWaterZ->SetGuidance("Rotate the water block about Z. Don't forget the unit!");
     
     updateGeom = new G4UIcmdWithoutParameter("/geometryMessenger/update", this);
     updateGeom->SetGuidance("Update the geometry. MUST be called after changing with the commands in this messenger!");

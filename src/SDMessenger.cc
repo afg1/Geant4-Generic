@@ -106,7 +106,7 @@ void SDMessenger::SetNewValue(G4UIcommand* cmd, G4String newValue)
             G4Exception("SDMessenger", "AXIS", FatalErrorInArgument , "Must set Axis before adding histogram.");
         }
         
-        SDPtr->AddHistogram();// Only get here if everything went well!
+        SDPtr->AddHistogram(newValue);// Only get here if everything went well!
     }
     
     if(cmd == setHistDim)

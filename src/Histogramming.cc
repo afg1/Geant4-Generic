@@ -6,6 +6,7 @@
 */
 
 #include "Histogramming.hh"
+#include "G4SystemOfUnits.hh"
 
 
 Histogram::Histogram(G4String name, G4ThreeVector cent, G4ThreeVector ext, G4ThreeVector bin, short int dim, int type)
@@ -101,16 +102,43 @@ Histogram1D::~Histogram1D()
 {
 }
 
-void Histogram1D::Fill(G4ThreeVector pos, double D)
+void Histogram1D::Fill(G4ThreeVector pos, double D, double S)
 {
     
-    // Leave it up to the SD to give us sensible numbers
+    // Leave it up to the SD to give us sensible numbers -convert based on type though
+    G4double Duse(D);
+    if(hist_type == 2 || hist_type == 3)// The penumbras - need to specify a bin width...
+    {
+//        G4cout << pos << G4endl;
+        G4double binwidth = 2.0 * mm;
+        if(!( (abs(pos[2-bindim1] - centre[2-bindim1]) < binwidth) && abs(pos[abs(1-bindim1)] - centre[abs(1-bindim1)]) < binwidth) )
+        {
+            return;
+        }
+        if(hist_type == 2)
+        {
+            Duse = D;
+        }
+        else if(hist_type == 3)
+        {
+            Duse = (D*keV)/(S*um);// units of LET are keV/um
+        }
+    }
+    else if(hist_type == 0)// Straight up dose
+    {
+        Duse = D;
+    }
+    else if(hist_type == 1)// LET
+    {
+        Duse = (D*keV)/(S*um);// units of LET are keV/um
+    }
+    
     double diff = ((pos[bindim1] - centre[bindim1]) + extents[bindim1])/(2.0*extents[bindim1]);
     unsigned int u;
     u = static_cast<unsigned int>(floor(diff*bins[bindim1]));
     if(u < bins[bindim1])
     {
-        std::pair<unsigned int, double> temp = std::make_pair(u, D);// According to my tests in python, this hashing function has no collisions. It gets re-hashed anyway by the map though.
+        std::pair<unsigned int, double> temp = std::make_pair(u, Duse);// According to my tests in python, this hashing function has no collisions. It gets re-hashed anyway by the map though.
         std::pair<unsigned int, unsigned int> hitTemp = std::make_pair(u, 1);
         std::pair<std::unordered_map<unsigned int, double>::iterator, bool> insert_rval = data.insert(temp);
         std::pair<std::unordered_map<unsigned int, unsigned int>::iterator, bool> insert_hit = hitsHere.insert(hitTemp);
@@ -173,6 +201,7 @@ void Histogram1D::Write(G4String fname)
 
 Histogram2D::Histogram2D(G4String name, G4ThreeVector cent, G4ThreeVector ext, G4ThreeVector bin, short int dim, int type) : Histogram(name, cent, ext, bin, dim, type)
 {
+    G4cout << "Created 2d histogram" << G4endl;
     if(nx > 0 && ny > 0)
     {
         bindim1 = 0;
@@ -202,8 +231,14 @@ Histogram2D::~Histogram2D()
 
 }
 
-void Histogram2D::Fill(G4ThreeVector pos, double D)
+void Histogram2D::Fill(G4ThreeVector pos, double D, double S)
 {
+    G4double Duse(D);
+    if(hist_type == 1)// LET
+    {
+        Duse = (D*keV)/(S*um);// units of LET are keV/um
+    }
+
     // Leave it up to the SD to give us sensible numbers
     double diff1 = ((pos[bindim1] - centre[bindim2]) + extents[bindim1])/(2.0*extents[bindim1]);
     double diff2 = ((pos[bindim2] - centre[bindim2]) + extents[bindim2])/(2.0*extents[bindim2]);
@@ -214,7 +249,7 @@ void Histogram2D::Fill(G4ThreeVector pos, double D)
     u2 = static_cast<unsigned int>(floor(diff2*bins[bindim2]));
     if(u1 < bins[bindim1] && u2 < bins[bindim2])
     {
-        std::pair<unsigned int, double> temp = std::make_pair(u1 + bins[bindim1]*u2, D);// According to my tests in python, this hashing function has no collisions. It gets re-hashed anyway by the map though.
+        std::pair<unsigned int, double> temp = std::make_pair(u1 + bins[bindim1]*u2, Duse);// According to my tests in python, this hashing function has no collisions. It gets re-hashed anyway by the map though.
         std::pair<std::unordered_map<unsigned int, double>::iterator, bool> insert_rval = data.insert(temp);
         if(insert_rval.second)// Insertion succeeded! Return now
         {
@@ -267,8 +302,13 @@ Histogram3D::~Histogram3D()
 
 }
 
-void Histogram3D::Fill(G4ThreeVector pos, double D)
+void Histogram3D::Fill(G4ThreeVector pos, double D, double S)
 {
+    G4double Duse(D);
+    if(hist_type == 1)// LET
+    {
+        Duse = (D*keV)/(S*um);// units of LET are keV/um
+    }
     // Leave it up to the SD to give us sensible numbers
     double xdiff(0), ydiff(0), zdiff(0);
     xdiff = (pos[0] + extents[0])/(2.0*extents[0]);
@@ -282,7 +322,7 @@ void Histogram3D::Fill(G4ThreeVector pos, double D)
     
     if(ux < bins[0] && uy < bins[1] && uz < bins[2]  )
     {
-        std::pair<unsigned int, double> temp = std::make_pair(ux + nx*uy + (nx*ny)*uz , D);// According to my tests in python, this hashing function has no collisions. It gets re-hashed anyway by the map though.
+        std::pair<unsigned int, double> temp = std::make_pair(ux + nx*uy + (nx*ny)*uz , Duse);// According to my tests in python, this hashing function has no collisions. It gets re-hashed anyway by the map though.
         std::pair<std::unordered_map<unsigned int, double>::iterator, bool> insert_rval = data.insert(temp);
         if(insert_rval.second)// Insertion succeeded! Return now
         {
